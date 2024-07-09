@@ -1,0 +1,98 @@
+# Ignore all files ending in .log
+*.log
+
+# Ignore all files ending in .pyc
+*.pyc
+
+# Ignore all files ending in .pyo
+*.pyo
+
+# Ignore compiled python files
+__pycache__/
+
+# Ignore Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore virtual environment directories
+venv/
+env/
+.venv/
+.env/
+
+# Ignore IDE files
+.vscode/
+.idea/
+
+# Ignore Python egg files
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+bin/
+var/
+sdist/
+wheels/
+share/python-wheels/
+*.manifest
+*.spec
+
+# Ignore pytest cache
+.cache/
+
+# Ignore coverage reports
+.coverage
+.tox/
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# Ignore MyPy cache
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Ignore Pylint reports
+pylint-report.txt
+
+# Ignore Bandit reports
+bandit-report.json
+
+# Ignore wheel files
+*.whl
+
+# Ignore Sphinx documentation
+docs/_build/
+
+# Ignore local configuration files
+*.local
+*.env
+
+# Ignore log files
+*.log
+
+# Ignore backups
+*.bak
+
+# Ignore temporary files
+*.swp
+*.swo
+
+# Ignore AWS configuration files
+.aws/config
+
+# Ignore any secrets file
+secrets.json
+secrets.yaml
+
+# Ignore Mac specific files
+.DS_Store
+
+# Ignore Windows specific files
+Thumbs.db
