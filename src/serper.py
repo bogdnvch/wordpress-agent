@@ -3,8 +3,12 @@ from http import client as http_client
 
 from config import config
 
+# ------------------------------------------------ | find websites  | ------------------------------------------------
+
 
 class SerperService:
+    """Find sites that match your search"""
+
     serper_url: str = "google.serper.dev"
 
     def request_to_serper(self, query: str):

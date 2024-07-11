@@ -61,9 +61,6 @@ dmypy.json
 # Ignore Pylint reports
 pylint-report.txt
 
-# Ignore Bandit reports
-bandit-report.json
-
 # Ignore wheel files
 *.whl
 
@@ -73,9 +70,7 @@ docs/_build/
 # Ignore local configuration files
 *.local
 *.env
-
-# Ignore log files
-*.log
+*.env.localhost
 
 # Ignore backups
 *.bak
@@ -90,9 +85,3 @@ docs/_build/
 # Ignore any secrets file
 secrets.json
 secrets.yaml
-
-# Ignore Mac specific files
-.DS_Store
-
-# Ignore Windows specific files
-Thumbs.db

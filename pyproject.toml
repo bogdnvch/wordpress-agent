@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "wordpress-agent"
+version = "0.1.0"
+description = ""
+authors = ["bogdnvch <maksim.bogdanovich@wiseweb.by>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.11.9"
+
+langchain = "^0.2.7"
+langchain-openai = "^0.1.14"
+pydantic-settings = "^2.3.4"
+langchain-community = "^0.2.7"
+bs4 = "^0.0.2"
+pillow = "^10.4.0"
+unstructured = "^0.14.10"
+logging = "^0.4.9.6"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

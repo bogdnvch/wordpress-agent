@@ -1,8 +1,15 @@
 import re
+from typing import Literal, Optional
+from requests.models import Response
+
+import logging
+
+
+# --------------------------------------------- | some useful functions | ---------------------------------------------
 
 
 def clean_text(text):
-
+    """Removes useless data to make gpt-model easier to use"""
     # Remove HTML tags
     text = re.sub(r"<[^>]+>", "", text)
 
@@ -20,7 +27,7 @@ def clean_text(text):
     text = re.sub(r"\d{1,2}[-.\s]?\d{1,2}[-.\s]?\d{2,4}", "", text)  # International numbers with country code
 
     # Remove special characters and numbers
-    text = re.sub(r"[^A-Za-z\s]", "", text)
+    text = re.sub(r"[^A-Za-zА-Яа-я\s]", "", text)
 
     # Remove HTML entities
     text = re.sub(r"&[a-z]+;", "", text)
@@ -49,3 +56,18 @@ def clean_text(text):
     text = text.lower()
 
     return text
+
+
+def response_handler(
+    response: Response,
+    action: Literal["update", "upload"],
+    entity: Literal["post", "media"]
+) -> Optional[int]:
+    """Handles response and log helpful messages"""
+    if response.status_code in (200, 201, 204):
+        entity_id = response.json()["id"]
+        logging.info(f"{entity} with {entity}_id={entity_id} {action} successfully".capitalize())
+        return entity_id
+    else:
+        logging.info(f"Failed to {action} {entity}")
+
