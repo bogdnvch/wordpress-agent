@@ -16,4 +16,4 @@ class WordpressSettings(BaseSettings):
     )
 
 
-wp_config = WordpressSettings(_env_file="../.env")
+wp_config = WordpressSettings()
