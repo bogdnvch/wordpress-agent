@@ -1,7 +1,7 @@
 import json
 import logging
 from http import client as http_client
-from http.client import HTTPSConnection
+from http.client import HTTPSConnection, HTTPResponse
 from typing import Optional
 
 from .config import config
@@ -35,7 +35,7 @@ class SerperService:
         """Creates the payload for the search request"""
         return json.dumps({"q": query})
 
-    def _get_response(self, connection, payload):
+    def _get_response(self, connection, payload) -> HTTPResponse:
         """Sends the request and retrieves the response from the Serper API"""
         connection.request("POST", "/search", payload, self._headers)
         response = connection.getresponse()
@@ -50,7 +50,7 @@ class SerperService:
         }
 
     @staticmethod
-    def _parse_response(response):
+    def _parse_response(response) -> dict:
         """Parses the response from the Serper API"""
         data = response.read()
         data = json.loads(data.decode("utf-8"))
