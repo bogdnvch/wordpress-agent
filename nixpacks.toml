@@ -1,0 +1,31 @@
+[plan]
+start = "python main.py"
+
+[variables]
+PYTHON_VERSION = "3.11.9"
+ENVIRONMENT = "production"
+
+[phases.setup]
+nixPkgs = [
+  "python311",
+  "python311Packages.pip",  # Correct package name for pip
+]
+run = """
+echo 'Setting up the environment...'
+# Install global Python packages if needed
+pip install --upgrade pip
+"""
+
+[phases.build]
+run = """
+echo 'Building the project...'
+pip install -r requirements.txt
+echo 'Running database migrations...'
+alembic upgrade head
+"""
+
+[phases.start]
+run = """
+echo 'Starting the application...'
+python main.py
+"""
