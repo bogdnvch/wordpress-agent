@@ -12,11 +12,10 @@ class WordpressSettings(BaseSettings):
     WP_PASSWORD: str = Field(..., env="WP_PASSWORD")
     WP_URL: str = Field(..., env="WP_URL")
 
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        env_file_encoding="utf-8",
-        extra="ignore"
-    )
+    class Config:
+        env_file = ".env"
+        env_file_encoding = "utf-8"
+        extra = "ignore"
 
 
 wp_config = WordpressSettings()
