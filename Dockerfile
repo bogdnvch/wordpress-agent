@@ -3,14 +3,18 @@ FROM python:3.11.9-slim
 WORKDIR /app
 
 # Poetry
-RUN apt-get update && \
-    apt-get install -y curl && \
-    curl -sSL https://install.python-poetry.org | python3 -
+#RUN apt-get update && \
+#    apt-get install -y curl && \
+#    curl -sSL https://install.python-poetry.org | python3 -
+#
+#ENV PATH="/root/.local/bin:$PATH"
+#
+#COPY pyproject.toml poetry.lock ./
+#RUN poetry install --no-interaction --no-ansi
 
-ENV PATH="/root/.local/bin:$PATH"
+COPY requirements.txt ./
 
-COPY pyproject.toml poetry.lock ./
-RUN poetry install --no-interaction --no-ansi
+RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
