@@ -5,16 +5,13 @@ import requests
 from io import BytesIO
 from typing import Optional
 
-from bs4 import BeautifulSoup
-from langchain_community.callbacks import get_openai_callback
+from article import utils as article_utils
+from article.agent import generate_article
+from article.image_generation import ImageGenerator
 
-import image
-import utils
-from config import wp_config
-from agent import ArticleAgent
+from .config import wp_config
+from . import utils
 
-
-# --------------------------------------------- | wordpress upload data | ---------------------------------------------
 
 class WordpressUploader:
     """Uploads post or media to your Wordpress site."""
@@ -53,17 +50,17 @@ class WordpressUploader:
                 "status": "publish"
             }
         )
-        return utils.response_handler(response=response, action="upload", entity="post")
+        return utils.wordpress_response_handler(response=response, action="upload", entity="post")
 
-    def upload_image(self, image_bytes: BytesIO | None) -> Optional[int]:
-        if not image_bytes:
+    def upload_image(self, image: BytesIO | None) -> Optional[int]:
+        if not image:
             return
         response = requests.post(
             url=wp_config.WP_URL + "media",
             headers=self.media_headers,
-            files={"file": ("image.jpg", image_bytes, 'image/jpeg')},
+            files={"file": ("image.jpg", image, 'image/jpeg')},
         )
-        return utils.response_handler(response=response, action="upload", entity="media")
+        return utils.wordpress_response_handler(response=response, action="upload", entity="media")
 
     def update_post_with_media(self, post_id: int, media_id: int) -> Optional[int]:
         url = f"{self.wp_post_url}/{post_id}"
@@ -74,44 +71,20 @@ class WordpressUploader:
                 "featured_media": media_id
             }
         )
-        return utils.response_handler(response=response, action="update", entity="post")
+        return utils.wordpress_response_handler(response=response, action="update", entity="post")
 
-
-def get_generated_post(query: str) -> str:
-    """Gets generated post"""
-    agent = ArticleAgent().initialize()
-    with get_openai_callback() as cb:
-        output = agent({"input": query})
-        print(cb)
-    return output["output"]
-
-
-def extract_title_from_content(content: str) -> tuple[str, str]:
-    """Extracts title post content"""
-    soup = BeautifulSoup(content, "html.parser")
-    title = soup.find("h1").text
-    content = content.replace(title, "")
-    return title, content
-
-
-def is_html(text: str) -> bool:
-    """Checks if text is HTML"""
-    soup = BeautifulSoup(text, "html.parser")
-    return bool(soup.find())
-
-
-# -------------------------------------------------- | make a post | --------------------------------------------------
 
 def make_post(query: str):
     """Main function to make a post"""
     wp_uploader = WordpressUploader()
-    post = get_generated_post(query=query)
-    if not is_html(post):
+    post = generate_article(query=query)
+    if not article_utils.is_html(post):
         logging.critical("Unfortunately post wasn't generated. Generated text is not HTML :( ")
+        logging.info(post)
         return
-    title, post = extract_title_from_content(content=post)
+    title, post = article_utils.extract_title_from_content(content=post)
     post_id = wp_uploader.upload_post(title=title, post=post)
-    image_bytes = image.get_generated_image(image_query=title)
-    media_id = wp_uploader.upload_image(image_bytes=image_bytes)
+    image = ImageGenerator().generate(image_query=title)
+    media_id = wp_uploader.upload_image(image=image)
     if post_id and media_id:
         wp_uploader.update_post_with_media(post_id=post_id, media_id=media_id)

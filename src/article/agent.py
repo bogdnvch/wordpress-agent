@@ -8,15 +8,21 @@ from langchain_core.prompts import MessagesPlaceholder
 from langchain_openai import ChatOpenAI
 from langchain_community.document_loaders import UnstructuredURLLoader
 from langchain_core.tools import Tool
+from langchain_community.callbacks import get_openai_callback
 
-from serper import SerperService
-from utils import clean_text
+from .config import config
+from .prompts import agent_prompt
+from .serper import SerperService
+from . import utils
 
 
-from config import config
+def generate_article(query: str) -> str:
+    agent = ArticleAgent().initialize()
+    with get_openai_callback() as cb:
+        output = agent({"input": query})
+        print(cb)
+    return output["output"]
 
-
-# ------------------------------------------------- | article agent | -------------------------------------------------
 
 class ArticleAgent:
     _model = "gpt-3.5-turbo"
@@ -39,16 +45,8 @@ class ArticleAgent:
     def _agent_kwargs(self):
         return {
             "extra_prompt_messages": [MessagesPlaceholder(variable_name="memory")],
-            "system_message": self._system_message
+            "system_message": SystemMessage(content=agent_prompt.system_prompt)
         }
-
-    @property
-    def _system_message(self):
-        with open("agent_prompt.txt", "r", encoding="utf-8") as file:
-            content = file.read()
-        return SystemMessage(
-            content=content
-        )
 
     @property
     def _memory(self):
@@ -63,25 +61,33 @@ class ArticleAgent:
 
 
 def search(query: str, *args, **kwargs) -> str:
-    response_data = SerperService().request_to_serper(query=query)
-    urls = [result["link"] for result in response_data["organic"]]
-    logging.info("Found 10 websites:\n")
-    [
-        logging.info(f"\t{url}")
-        for url in urls
-    ]
-    return str(urls)
+    try:
+        response_data = SerperService().request_to_serper(query=query)
+        urls = [result["link"] for result in response_data["organic"]]
+        logging.info("Found 10 websites:\n")
+        [
+            logging.info(f"\t{url}")
+            for url in urls
+        ]
+        return str(urls)
+    except Exception as e:
+        logging.error(f"Error during search: {e}")
+        return "search_error"
 
 
 def scrape_website(url: str, *args, **kwargs) -> str:
-    loader = UnstructuredURLLoader(urls=[url])
-    content = loader.load()
-    if not content or not content[0]:
-        return "content_error"
-    print("text before cleaning: ", len(content[0].page_content))
-    text = clean_text(content[0].page_content)
-    print("text after cleaning: ", len(text))
-    return text
+    try:
+        loader = UnstructuredURLLoader(urls=[url])
+        content = loader.load()
+        if not content or not content[0]:
+            return "content_error"
+        logging.info(f"Text before cleaning: {len(content[0].page_content)}")
+        text = utils.clean_text(content[0].page_content)
+        logging.info(f"Text after cleaning: {len(text)}")
+        return text
+    except Exception as e:
+        logging.error(f"Error during scraping website {url}: {e}")
+        return "scrape_error"
 
 
 def get_current_datetime(*args, **kwargs):
@@ -100,7 +106,7 @@ TOOLS = [
         name="scrape_website",
         func=scrape_website,
         description="Useful when you need to get content from the website url. "
-                    "If return 'content_error' try another url."
+                    "If return 'content_error' or 'scrape_error' try another url."
     ),
     Tool(
         name="get_current_datetime",
