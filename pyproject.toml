@@ -17,6 +17,7 @@ pillow = "^10.4.0"
 unstructured = "^0.14.10"
 logging = "^0.4.9.6"
 cloudscraper = "^1.2.71"
+requests = "^2.32.3"
 
 
 [build-system]
