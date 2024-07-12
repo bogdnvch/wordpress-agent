@@ -1,8 +1,6 @@
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from dotenv import load_dotenv
 
-load_dotenv()
 
 class WordpressSettings(BaseSettings):
     """Settings for Wordpress credentials and URL."""
@@ -12,6 +10,7 @@ class WordpressSettings(BaseSettings):
     WP_URL: str = Field(..., env="WP_URL")
 
     model_config = SettingsConfigDict(
+        env_file=".env",
         env_file_encoding="utf-8",
         extra="ignore"
     )
