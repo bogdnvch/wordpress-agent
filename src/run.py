@@ -5,6 +5,5 @@ from wordpress.wp_uploader import make_post
 logging.basicConfig(level=logging.INFO)
 
 if __name__ == "__main__":
-    query = "Напиши новости про спорт 2024 года"
+    query = "Напиши новости про IT за 2024 год"
     make_post(query=query)
-    # print("dfglkujdfg")
