@@ -13,7 +13,7 @@ RUN apt-get update && \
 ENV PATH="/root/.local/bin:$PATH"
 
 # Copy only the pyproject.toml and poetry.lock to leverage Docker cache
-COPY pyproject.toml poetry.lock* /usr/src/app/
+COPY pyproject.toml poetry.lock /usr/src/app/
 
 # Install dependencies
 RUN poetry install --no-root
