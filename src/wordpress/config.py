@@ -1,8 +1,5 @@
 from pydantic import Field
-from pydantic_settings import BaseSettings, SettingsConfigDict
-from dotenv import load_dotenv
-
-load_dotenv()
+from pydantic_settings import BaseSettings
 
 
 class WordpressSettings(BaseSettings):
@@ -13,7 +10,7 @@ class WordpressSettings(BaseSettings):
     WP_URL: str = Field(..., env="WP_URL")
 
     class Config:
-        env_file = ".env"
+        env_file = "../.env"
         env_file_encoding = "utf-8"
         extra = "ignore"
 
