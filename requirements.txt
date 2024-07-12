@@ -33,7 +33,6 @@ langchain-openai==0.1.14
 langchain-text-splitters==0.2.2
 langdetect==1.0.9
 langsmith==0.1.84
-logging==0.4.9.6
 lxml==5.2.2
 marshmallow==3.21.3
 multidict==6.0.5
