@@ -11,6 +11,7 @@ class TelegramSettings(BaseSettings):
     """Settings for Telegram."""
 
     TELEGRAM_API_TOKEN: str = Field(..., env="TELEGRAM_API_TOKEN")
+    USER_ID: str = Field(..., env="USER_ID")
     ASSISTANT_ID: Optional[str] = Field(None, env="ASSISTANT_ID")
 
     class Config:

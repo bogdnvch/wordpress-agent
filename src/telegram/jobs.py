@@ -34,9 +34,12 @@ def generate_article_job(title: str):
 async def generate_title_job():
     assistant = get_or_create_assistant()
     thread = client.beta.threads.create()
-    user_id, _ = next(iter(user_storage.items()))
-    user_storage[user_id]["thread_id"] = thread.id
-    save_users(user_storage)
+    users = {
+        tg_config.USER_ID: {
+            "thread_id": thread.id
+        }
+    }
+    save_users(users)
     title = await asyncio.to_thread(generate_title, assistant.id, thread.id)
     client.beta.threads.messages.create(
         thread_id=thread.id,
@@ -45,7 +48,7 @@ async def generate_title_job():
     )
     print(title)
     print(22, thread.id)
-    await bot.send_message(chat_id=user_id, text=title)
+    await bot.send_message(chat_id=tg_config.USER_ID, text=title)
     hour, minute = get_time_plus_30_minutes()
     scheduler.add_job(generate_article_job, "cron", args=[title], id="gen_article", hour=hour, minute=minute)
 
