@@ -8,7 +8,7 @@ from article.agent import generate_article
 from article import utils as article_utils
 from article.image_generation import ImageGenerator
 from article.config import config
-from storage.storage import user_storage, save_users
+from storage.storage import save_users
 from telegram.assistant import get_or_create_assistant, generate_title
 from telegram.config import tg_config, bot, scheduler
 from wordpress.wp_api_service import WordpressApiService

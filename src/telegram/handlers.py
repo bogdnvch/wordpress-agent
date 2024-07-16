@@ -7,7 +7,7 @@ from aiogram.fsm.context import FSMContext
 from openai import Client
 
 from article.config import config
-from storage.storage import user_storage, save_users
+from storage.storage import save_users, load_users
 from telegram.config import scheduler
 from telegram.states import UserInfo
 from telegram.assistant import get_or_create_assistant
@@ -32,7 +32,9 @@ async def handle_start(message: types.Message, state: FSMContext):
 
 @router.message(lambda message: message.text)
 async def handle_text(message: types.Message):
-    thread_id = user_storage[message.from_user.id]["thread_id"]
+    user_storage = load_users()
+    print(user_storage)
+    thread_id = user_storage[str(message.from_user.id)]["thread_id"]
     assistant = get_or_create_assistant()
     print(assistant.id)
     client.beta.threads.messages.create(

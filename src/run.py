@@ -17,6 +17,6 @@ async def start_bot():
 
 if __name__ == "__main__":
     scheduler.start()
-    scheduler.add_job(generate_title_job, "cron", id="get_title", hour=8, minute=30)
+    scheduler.add_job(generate_title_job, "cron", id="get_title", hour=8, minute=38)
     loop = asyncio.get_event_loop()
     loop.run_until_complete(start_bot())
