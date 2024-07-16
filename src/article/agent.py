@@ -9,17 +9,34 @@ from langchain_openai import ChatOpenAI
 from langchain_community.document_loaders import UnstructuredURLLoader
 from langchain_core.tools import Tool
 from langchain_community.callbacks import get_openai_callback
+from openai import OpenAI
 
 from .config import config
-from .prompts import agent_prompt
+from .prompts import agent_prompt, title_query_prompt
 from .serper import SerperService
 from . import utils
 
 
-def generate_article(query: str) -> str:
+# def generate_title() -> str:
+#     client = OpenAI(api_key=config.OPENAI_API_KEY)
+#     query = title_query_prompt.get_title_query()
+#     response = client.chat.completions.create(
+#         model="gpt-4-turbo",
+#         messages=[
+#             {"role": "system", "content": query}
+#         ],
+#         max_tokens=100,
+#         n=1,
+#     )
+#     title = response.choices[0].message.content
+#     print(title)
+#     return title
+
+
+def generate_article(topic: str) -> str:
     agent = ArticleAgent().initialize()
     with get_openai_callback() as cb:
-        output = agent({"input": query})
+        output = agent({"input": topic})
         print(cb)
     return output["output"]
 

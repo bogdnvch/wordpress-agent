@@ -10,7 +10,7 @@ def wordpress_response_handler(
     action: Literal["update", "upload"],
     entity: Literal["post", "media"]
 ) -> Optional[int]:
-    """Handles response and log helpful messages"""
+    """Handles post request response and log helpful messages"""
     logging.info(f" | {entity.capitalize()} | {action} | {response} |")
     if response.status_code in (200, 201):
         try:
@@ -19,4 +19,4 @@ def wordpress_response_handler(
             return entity_id
         except JSONDecodeError:
             pass
-    logging.info(f"Failed to {action} {entity}")
+    logging.error(f"Failed to {action} {entity}")

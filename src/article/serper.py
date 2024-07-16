@@ -18,9 +18,7 @@ class SerperService:
             connection = self._make_connection()
             payload = self._build_payload(query=query)
             response = self._get_response(connection=connection, payload=payload)
-            print("type of response", type(response))
             data = self._parse_response(response)
-            print("type of data", type(data))
             return data
         except Exception as e:
             logging.error(f"Error in SerperService: {e}")

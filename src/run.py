@@ -1,24 +1,22 @@
+import asyncio
 import logging
-from wordpress.wp_uploader import make_post
 
+from telegram.config import scheduler, dp, bot
+from telegram.handlers import register_handlers
+from telegram.jobs import generate_title_job
 
 logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO)
+logging.getLogger("apscheduler").setLevel(logging.INFO)
+
+
+async def start_bot():
+    register_handlers(dp)
+    await dp.start_polling(bot)
+
 
 if __name__ == "__main__":
-    query = """
-    Мы IT компания, которая работает с искусственным интеллектом. Напиши интересную статью про искусственный интеллект.
-    Не повторяй уже существующие статьи. Выбери какую-нибудь другую тему.
-    
-    Вот опубликованные статьи:
-    - Искусственный интеллект в медицине: новые горизонты и возможности
-    - Искусственный интеллект: Как ИИ меняет бизнес-процессы 
-    - Искусственный интеллект в логистике: Как ИИ меняет правила игры 
-    - Искусственный Интеллект: Революция в Мире Продаж 
-    - Искусственный интеллект в HR: Перспективы и вызовы на рынке труда 
-    - В чем польза ИИ для бизнеса: Революция в управлении и операционной деятельности 
-    - Искусственный интеллект в образовании: преимущества, вызовы и будущее
-    - Искусственный Интеллект: Революция в SEO для Бизнеса
-    - Искусственный Интеллект: На Пороге Новой Эры 
-    - Выбрать Как ИИ трансформирует HR: повышение эффективности и вовлечённости
-    """
-    make_post(query=query)
+    scheduler.start()
+    scheduler.add_job(generate_title_job, "cron", id="get_title", hour=7, minute=8)
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(start_bot())
