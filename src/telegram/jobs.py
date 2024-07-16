@@ -47,7 +47,7 @@ async def generate_title_job():
     print(22, thread.id)
     await bot.send_message(chat_id=user_id, text=title)
     hour, minute = get_time_plus_30_minutes()
-    scheduler.add_job(generate_article_job, "cron", id="gen_article", hour=hour, minute=minute)
+    scheduler.add_job(generate_article_job, "cron", args=[title], id="gen_article", hour=hour, minute=minute)
 
 
 def get_time_plus_30_minutes():

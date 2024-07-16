@@ -31,9 +31,12 @@ def generate_title(assistant_id: str, thread_id: str) -> Optional[str]:
 
 
 def get_or_create_assistant():
-    instructions = ("All conversation in Russian. We are an IT company that works with artificial intelligence. "
-                    "Generate an interesting topic for the article. You should recognize whether user likes the topic or not"
-                    "If not, keep suggesting other topics until user likes it. if user likes the topic, call function `define_whether_user_likes_article_topic`")
+    instructions = """
+    All conversation in RUSSIAN. We are an IT company that works with artificial intelligence. 
+    Generate an interesting topic for the article. You should recognize whether user likes the topic or not.
+    If not, keep suggesting other topics until user likes it. if user likes the topic, call function `define_whether_user_likes_article_topic`
+    You should speak only in russian and you should generate topic in RUSSIAN.
+    """
     if tg_config.ASSISTANT_ID:
         assistant = client.beta.assistants.retrieve(assistant_id=tg_config.ASSISTANT_ID)
     else:
@@ -66,7 +69,7 @@ func = {
 
 
 def get_title_prompt():
-    query = "Generate a title. Don't repeat existing topics. Here are the published articles:"
+    query = "Generate a title. You should generate only in RUSSIAN. Don't repeat existing topics. Here are the published articles:"
     wp = WordpressApiService()
     posts = wp.fetch_all_posts()
     titles = [f"-{post['title']['rendered']}" for post in posts]
